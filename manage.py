@@ -15,8 +15,15 @@ app = Flask(__name__)
 def index():
     """用于展示一些可视化的数据"""
 
+    app_count = len(INSTALL_APP)
 
-    return render_template('index.html')
+    data = {
+        "app_count": app_count,
+        "app_list": INSTALL_APP,
+        "cropid": CROPID
+    }
+
+    return render_template('index.html', **data)
 
 
 @we_hook(app, '/hook/', work_name='default')

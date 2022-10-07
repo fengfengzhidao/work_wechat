@@ -3,82 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>枫枫知道|企业微信API接口</title>
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        header {
-            background-color: #335883;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-        }
-
-        header .right {
-            display: flex;
-            justify-content: right;
-            align-items: center;
-            width: 1000px;
-
-        }
-
-        header .right .item {
-            color: white;
-            font-size: 14px;
-        }
-
-        header .right span {
-            padding: 0 6px;
-            color: #8298b4;
-        }
-
-
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        main > div {
-            width: 1000px;
-        }
-
-        .slogan {
-            margin-top: 20px;
-            background-color: #f1f3f4;
-            height: 200px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #335883;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        main .actions{
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-
-        }
-        main .actions .action_item{
-            width: 24%;
-            height: 100px;
-            background-color: #f1f3f4;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_3689511_m7q7n928oe.css">
 </head>
 <body>
 <div id="app">
@@ -95,31 +21,88 @@
     </header>
     <main>
         <div class="slogan">
-            枫枫知道企业微信API
+            <div class="title">
+                枫枫知道企业微信API
+            </div>
+            <div class="cropid">
+                企业ID：{{ cropid }}
+            </div>
         </div>
         <div class="actions">
             <div class="action_item">
-                <div class="action_play">菜单</div>
-                <div class="action_hover">Menu</div>
+                <div class="action_play">文档</div>
+                <div class="action_hover">DOCS</div>
+                <i class="iconfont icon-wendang"></i>
             </div>
             <div class="action_item">
-                <div class="action_play">用户</div>
-                <div class="action_hover">User</div>
+                <div class="action_play">发送消息</div>
+                <div class="action_hover">852</div>
+                <i class="iconfont icon-jijianfasong-xianxing"></i>
             </div>
             <div class="action_item">
-                <div class="action_play">文章</div>
-                <div class="action_hover">Article</div>
+                <div class="action_play">接收消息</div>
+                <div class="action_hover">549</div>
+                <i class="iconfont icon-xiaoxi"></i>
             </div>
             <div class="action_item">
-                <div class="action_play">心情</div>
-                <div class="action_hover">Mood</div>
+                <div class="action_play">应用数</div>
+                <div class="action_hover">{{ app_count }}</div>
+                <i class="iconfont icon-yingyongchengxu"></i>
             </div>
+        </div>
+
+        <div class="app_list">
+            {% for (key, item) in app_list.items() %}
+                <div class="app_item">
+
+                    <div class="left">
+                        {{ key }}: {{ item.label }}
+                    </div>
+                    <div class="right">
+
+                        <div class="recv">
+                            <div class="label_title">发送消息配置</div>
+                            <div class="line">
+                                AgentId:<span>{{ item.agentid }}</span>
+                            </div>
+                            <div class="line">
+                                Secret:<span>******</span>
+                            </div>
+                        </div>
+                        <div class="send">
+                            <div class="label_title">接收消息配置</div>
+                            <div class="line">
+                                URL:<span>{{ item.URL }}</span>
+                            </div>
+                            <div class="line">
+                                Token:<span>{{ item.Token }}</span>
+                            </div>
+                            <div class="line">
+                                EncodingAESKey:<span>{{ item.EncodingAESKey.decode() }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
         </div>
 
     </main>
     <footer>
-
-    </footer>
+        <nav class="frame_foot_nav">
+            <a class="frame_foot_nav_item" href="http://www.tencent.com/" target="_blank">关于腾讯</a>
+            <span class="frame_foot_nav_itemDep">|</span>
+            <a class="frame_foot_nav_item" href="http://www.fengfengzhidao.com/about/" target="_blank">关于枫枫知道</a>
+            <span class="frame_foot_nav_itemDep">|</span>
+            <a class="frame_foot_nav_item" href="https://work.weixin.qq.com/nl/norm" target="_blank">使用规范</a>
+            <span class="frame_foot_nav_itemDep">|</span>
+            <a class="frame_foot_nav_item"
+               href="https://work.weixin.qq.com/wework_admin/app_intro_list?type=mng&from=frame_footer"
+               target="_blank">更新日志</a>
+            <span class="frame_foot_nav_itemDep">|</span>
+            <a class="frame_foot_nav_item" href="https://work.weixin.qq.com/help" target="_blank">帮助中心</a>
+        </nav>
+        <p class="frame_foot_copyright">© 1998&nbsp;-&nbsp;2022&nbsp;Tencent Inc. All Rights Reserved</p></footer>
 </div>
 </body>
 </html>

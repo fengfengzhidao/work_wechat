@@ -34,6 +34,7 @@ def validation(receive_work):
     echo_str = request.args.get('echostr', '')
     ret, res_str = receive_work.crypt.VerifyURL(msg_signature, timestamp, nonce, echo_str)
     if ret != 0:
+        # 用户可能直接访问了这个接口
         print("ERR: VerifyURL ret: " + str(ret))
         return "failed"
     else:
