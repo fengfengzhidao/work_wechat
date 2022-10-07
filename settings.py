@@ -11,8 +11,8 @@ INSTALL_APP = {
     "default": {
         ####  发送消息配置  #####
         "label": "三方应用名",
-        "secretid": '',  # 应用Secret
-        "agentid": 0,  # 应用id
+        "Secret": '',  # 应用Secret
+        "AgentId": 0,  # 应用id
         ####  接收消息配置  #####
         "URL": "",  # URL
         "Token": "",  # Token

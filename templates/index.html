@@ -25,7 +25,7 @@
                 枫枫知道企业微信API
             </div>
             <div class="cropid">
-                企业ID：{{ cropid }}
+                企业ID：{{ des(cropid) }}
             </div>
         </div>
         <div class="actions">
@@ -63,10 +63,10 @@
                         <div class="recv">
                             <div class="label_title">发送消息配置</div>
                             <div class="line">
-                                AgentId:<span>{{ item.agentid }}</span>
+                                AgentId:<span>{{ item.AgentId }}</span>
                             </div>
                             <div class="line">
-                                Secret:<span>******</span>
+                                Secret:<span>{{ des(item.Secret) }}</span>
                             </div>
                         </div>
                         <div class="send">
@@ -75,10 +75,10 @@
                                 URL:<span>{{ item.URL }}</span>
                             </div>
                             <div class="line">
-                                Token:<span>{{ item.Token }}</span>
+                                Token:<span>{{ des(item.Token) }}</span>
                             </div>
                             <div class="line">
-                                EncodingAESKey:<span>{{ item.EncodingAESKey.decode() }}</span>
+                                EncodingAESKey:<span>{{ des(item.EncodingAESKey.decode()) }}</span>
                             </div>
                         </div>
 

@@ -7,6 +7,7 @@ from work_wechat_sdk import ReceiveBaseWork
 from work_wechat_sdk import Work
 from work_wechat_sdk.web import we_hook
 from settings import CROPID, INSTALL_APP
+import re
 
 app = Flask(__name__)
 
@@ -15,12 +16,25 @@ app = Flask(__name__)
 def index():
     """用于展示一些可视化的数据"""
 
+    def desensitization(val):
+        # 将最中心的n/3个字符替换为*号
+        # 6  12**23
+        # 12 1234****1234
+        # 21 1234567*******7654321
+        # 5 12*22
+        # 求总数
+        all_count = len(val)
+        div, mod = divmod(all_count, 3)
+        print(val, type(val))
+        return re.sub(r'(.{%s})(.*)(.{%s})' % (div, div), r'\1%s\3' % ('*' * (div + mod)), val)
+
     app_count = len(INSTALL_APP)
 
     data = {
         "app_count": app_count,
         "app_list": INSTALL_APP,
-        "cropid": CROPID
+        "cropid": CROPID,
+        "des": desensitization
     }
 
     return render_template('index.html', **data)

@@ -31,11 +31,11 @@ class Work:
         payload['touser'] = kwargs.get('to_user', '')  # 发给谁，用|连接
         payload['toparty'] = kwargs.get('to_party', '')  # 部门
         payload['totag'] = kwargs.get('to_tag', '')  # 标签
-        payload['agentid'] = self.config["agentid"]
+        payload['agentid'] = self.config["AgentId"]
 
     def authentication(self):
         """鉴权"""
-        url = base_url + f'gettoken?corpid={CROPID}&corpsecret={self.config["secretid"]}'
+        url = base_url + f'gettoken?corpid={CROPID}&corpsecret={self.config["Secret"]}'
         r = requests.get(url).json()
         self.access_token = r['access_token']
 

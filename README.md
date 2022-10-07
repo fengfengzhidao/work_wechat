@@ -13,6 +13,7 @@ web框架用的是`flask`
 先注册一个企业微信
 
 # 创建应用
+
 ![](http://python.fengfengzhidao.com/pic/20221007142314.png)
 ![](http://python.fengfengzhidao.com/pic/20221007142609.png)
 ![](http://python.fengfengzhidao.com/pic/20221007142711.png)
@@ -30,6 +31,7 @@ web框架用的是`flask`
 INSTALL_APP = {
     "default": {
         ####  发送消息配置  #####
+        "label": "应用名",
         "secretid": '',  # 应用Secret
         "agentid": 1000003,  # 应用id
         ####  接收消息配置  #####
@@ -42,6 +44,7 @@ INSTALL_APP = {
 ```
 
 配置成功之后，可以运行这段代码进行测试
+
 ```python
 from work_wechat_sdk import Work
 
@@ -59,12 +62,14 @@ work.send_text('测试数据')
 ![](http://python.fengfengzhidao.com/pic/20221007145527.png)
 
 ## 代码使用
+
 ```python
 from flask import Flask
 from work_wechat_sdk.receives_message import ReceiveBaseWork
 from work_wechat_sdk.web import we_hook
 
 app = Flask(__name__)
+
 
 @we_hook(app, '/hook/', work_name='default')
 class RecvWork(ReceiveBaseWork):
@@ -77,6 +82,7 @@ class RecvWork(ReceiveBaseWork):
         """
         print('default', user, msg)
 ```
+
 我们需要编写一个类，去继承ReceiveBaseWork，这个类中的recv方法就是接受消息的回调
 
 一共有两个参数，user是发送者的用户id
