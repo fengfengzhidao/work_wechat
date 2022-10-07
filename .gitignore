@@ -1,0 +1,8 @@
+/venv/
+/*venv/
+.idea
+local_settings.py
+__pycache__
+.vscode
+fengfeng_api/*
+nginx_start.conf

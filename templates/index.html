@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>枫枫知道|企业微信API接口</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        header {
+            background-color: #335883;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        header .right {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            width: 1000px;
+
+        }
+
+        header .right .item {
+            color: white;
+            font-size: 14px;
+        }
+
+        header .right span {
+            padding: 0 6px;
+            color: #8298b4;
+        }
+
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        main > div {
+            width: 1000px;
+        }
+
+        .slogan {
+            margin-top: 20px;
+            background-color: #f1f3f4;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #335883;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        main .actions{
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+
+        }
+        main .actions .action_item{
+            width: 24%;
+            height: 100px;
+            background-color: #f1f3f4;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <header>
+        <div class="right">
+            <a class="item" href="#">
+                API文档
+            </a>
+            <span>|</span>
+            <a class="item" href="http://www.fengfengzhidao.com/">
+                枫枫知道
+            </a>
+        </div>
+    </header>
+    <main>
+        <div class="slogan">
+            枫枫知道企业微信API
+        </div>
+        <div class="actions">
+            <div class="action_item">
+                <div class="action_play">菜单</div>
+                <div class="action_hover">Menu</div>
+            </div>
+            <div class="action_item">
+                <div class="action_play">用户</div>
+                <div class="action_hover">User</div>
+            </div>
+            <div class="action_item">
+                <div class="action_play">文章</div>
+                <div class="action_hover">Article</div>
+            </div>
+            <div class="action_item">
+                <div class="action_play">心情</div>
+                <div class="action_hover">Mood</div>
+            </div>
+        </div>
+
+    </main>
+    <footer>
+
+    </footer>
+</div>
+</body>
+</html>
