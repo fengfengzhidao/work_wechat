@@ -1,6 +1,8 @@
-# work_wechat_api
+# WorkWechat
 
 博主所用python版本为3.9.8
+
+web框架用的是`flask`
 
 本项目为针对 **个人用户** 的企业微信api接口，实现方便的收发消息
 

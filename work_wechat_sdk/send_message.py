@@ -37,7 +37,6 @@ class Work:
         """鉴权"""
         url = base_url + f'gettoken?corpid={CROPID}&corpsecret={self.config["secretid"]}'
         r = requests.get(url).json()
-        print(r)
         self.access_token = r['access_token']
 
     # 发送消息

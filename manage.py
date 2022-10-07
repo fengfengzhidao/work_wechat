@@ -2,8 +2,9 @@
 # @Author:fengfeng
 # 代码运行的主程序
 from flask import Flask
-from flask import request, render_template
-from work_wechat_sdk.receives_message import ReceiveBaseWork, validation, user_message
+from flask import render_template
+from work_wechat_sdk.receives_message import ReceiveBaseWork
+from work_wechat_sdk.web import we_hook
 
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ def index():
     return render_template('index.html')
 
 
-# 自己编写一个类，继承ReceiveWork
+@we_hook(app, '/hook/', work_name='default')
 class RecvWork(ReceiveBaseWork):
     # 接收消息的回调
     def recv(self, user, msg):
@@ -25,7 +26,9 @@ class RecvWork(ReceiveBaseWork):
         print('default', user, msg)
 
 
-class RecvMornWork(ReceiveBaseWork):
+@we_hook(app, '/morn/', work_name='morn')
+class RecvWork(ReceiveBaseWork):
+    # 接收消息的回调
     def recv(self, user, msg):
         """
         :param user: 用户id
@@ -33,28 +36,6 @@ class RecvMornWork(ReceiveBaseWork):
         :return:
         """
         print('morn', user, msg)
-
-
-@app.route('/hook/', methods=['GET', 'POST'])
-def wechat_hook():
-    # 实例化一个收消息的对象
-    recv_work = RecvWork()
-
-    if request.method == 'GET':
-        return validation(recv_work)
-    elif request.method == 'POST':
-        return user_message(recv_work)
-
-
-@app.route('/morn/', methods=['GET', 'POST'])
-def wechat_morn_hook():
-    # 实例化一个收消息的对象
-    recv_work = RecvMornWork(work_name='morn')
-
-    if request.method == 'GET':
-        return validation(recv_work)
-    elif request.method == 'POST':
-        return user_message(recv_work)
 
 
 if __name__ == '__main__':
