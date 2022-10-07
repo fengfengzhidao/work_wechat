@@ -3,14 +3,19 @@
 # 代码运行的主程序
 from flask import Flask
 from flask import render_template
-from work_wechat_sdk.receives_message import ReceiveBaseWork
+from work_wechat_sdk import ReceiveBaseWork
+from work_wechat_sdk import Work
 from work_wechat_sdk.web import we_hook
+from settings import CROPID, INSTALL_APP
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
+    """用于展示一些可视化的数据"""
+
+
     return render_template('index.html')
 
 
@@ -24,6 +29,8 @@ class RecvWork(ReceiveBaseWork):
         :return:
         """
         print('default', user, msg)
+        work = Work(to_user='fengfeng')
+        work.send_text(msg)
 
 
 @we_hook(app, '/morn/', work_name='morn')
@@ -36,6 +43,8 @@ class RecvWork(ReceiveBaseWork):
         :return:
         """
         print('morn', user, msg)
+        work = Work(work_name='morn', to_user='fengfeng')
+        work.send_text(msg)
 
 
 if __name__ == '__main__':

@@ -8,13 +8,13 @@ from settings import CROPID, INSTALL_APP
 from work_wechat_sdk.wx_biz_msg_crypt import WXBizMsgCrypt
 
 
-class ReceiveBaseWork(WXBizMsgCrypt):
+class ReceiveBaseWork:
     def __init__(self, work_name='default', **kwargs):
         try:
             self.config = INSTALL_APP[work_name]
         except Exception:
             raise KeyError('the work_name does not exist！')
-        super(ReceiveBaseWork, self).__init__(
+        self.crypt = WXBizMsgCrypt(
             self.config["Token"],
             self.config["EncodingAESKey"],
             CROPID.encode()
@@ -23,6 +23,7 @@ class ReceiveBaseWork(WXBizMsgCrypt):
     # 接收消息的回调
     def recv(self, user, msg):
         print('base recv：', user, msg)
+        raise ValueError('改方法需要被重写')
 
 
 # 添加的时候的验证
@@ -31,7 +32,7 @@ def validation(receive_work):
     timestamp = request.args.get('timestamp', '')
     nonce = request.args.get('nonce', '')
     echo_str = request.args.get('echostr', '')
-    ret, res_str = receive_work.VerifyURL(msg_signature, timestamp, nonce, echo_str)
+    ret, res_str = receive_work.crypt.VerifyURL(msg_signature, timestamp, nonce, echo_str)
     if ret != 0:
         print("ERR: VerifyURL ret: " + str(ret))
         return "failed"
@@ -45,7 +46,7 @@ def user_message(receive_work):
     timestamp = request.args.get('timestamp', '')
     nonce = request.args.get('nonce', '')
     data = request.data.decode('utf-8')
-    ret, s_msg = receive_work.DecryptMsg(data, msg_signature, timestamp, nonce)
+    ret, s_msg = receive_work.crypt.DecryptMsg(data, msg_signature, timestamp, nonce)
 
     if ret != 0:
         print("ERR: DecryptMsg ret: " + str(ret))
