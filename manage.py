@@ -25,7 +25,6 @@ def index():
         # 求总数
         all_count = len(val)
         div, mod = divmod(all_count, 3)
-        print(val, type(val))
         return re.sub(r'(.{%s})(.*)(.{%s})' % (div, div), r'\1%s\3' % ('*' * (div + mod)), val)
 
     app_count = len(INSTALL_APP)
@@ -42,30 +41,34 @@ def index():
 
 @we_hook(app, '/hook/', work_name='default')
 class RecvWork(ReceiveBaseWork):
-    # 接收消息的回调
-    def recv(self, user, msg):
+    # 可以接收六大消息
+    # text
+    # image
+    # voice
+    # link
+    # video
+    # location
+    def text(self, content):
         """
-        :param user: 用户id
-        :param msg: 消息内容
+        :param content: 消息内容
         :return:
         """
-        print('default', user, msg)
+        print('default', content, self.user)
         work = Work(to_user='fengfeng')
-        work.send_text(msg)
+        work.send_text(content)
 
 
 @we_hook(app, '/morn/', work_name='morn')
 class RecvWork(ReceiveBaseWork):
     # 接收消息的回调
-    def recv(self, user, msg):
+    def text(self, content):
         """
-        :param user: 用户id
-        :param msg: 消息内容
+        :param content: 消息内容
         :return:
         """
-        print('morn', user, msg)
+        print('morn', content, self.user)
         work = Work(work_name='morn', to_user='fengfeng')
-        work.send_text(msg)
+        work.send_text(content)
 
 
 if __name__ == '__main__':
