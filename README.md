@@ -8,6 +8,8 @@ web框架用的是`flask`
 
 针对初学者，跟着官方那个配置文档，可能有点不太方便，本项目可以方便的配置企业微信，做到开箱即用
 
+[企业微信官方文档](https://developer.work.weixin.qq.com/document/path/90664)
+
 先注册一个企业微信
 
 # 创建应用
@@ -58,25 +60,35 @@ work.send_text('测试数据')
 
 ## 代码使用
 ```python
-from work_wechat_sdk import ReceiveBaseWork
+from flask import Flask
+from work_wechat_sdk.receives_message import ReceiveBaseWork
+from work_wechat_sdk.web import we_hook
 
-class RecvMornWork(ReceiveBaseWork):
+app = Flask(__name__)
+
+@we_hook(app, '/hook/', work_name='default')
+class RecvWork(ReceiveBaseWork):
+    # 接收消息的回调
     def recv(self, user, msg):
         """
         :param user: 用户id
         :param msg: 消息内容
         :return:
         """
-        print('morn', user, msg)
-        
-@app.route('/morn/', methods=['GET', 'POST'])
-def wechat_morn_hook():
-    # 实例化一个收消息的对象
-    recv_work = RecvMornWork(work_name='morn')
-
-    if request.method == 'GET':
-        return validation(recv_work)
-    elif request.method == 'POST':
-        return user_message(recv_work)
-
+        print('default', user, msg)
 ```
+我们需要编写一个类，去继承ReceiveBaseWork，这个类中的recv方法就是接受消息的回调
+
+一共有两个参数，user是发送者的用户id
+
+msg则是消息内容，在纯文本就是text，图片就是图片的在线链接
+
+web_hook则是做类和视图挂载到路由的作用
+
+它一共有三个参数
+
+第一个是app
+
+第二个是路由
+
+第三个关键字参数是调用哪一个应用去接收，默认是default

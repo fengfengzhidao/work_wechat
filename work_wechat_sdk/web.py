@@ -8,7 +8,7 @@ from work_wechat_sdk.receives_message import validation
 from work_wechat_sdk.receives_message import user_message
 
 
-def we_hook(app, url, **config):
+def we_hook(app, url, work_name='default'):
     """
     flask模式下，快速使用本项目
     :param app: app
@@ -16,8 +16,6 @@ def we_hook(app, url, **config):
     :param config: 如果有多app的情况，需要配置work_name参数
     :return:
     """
-
-    work_name = config.get('work_name', 'default')
 
     def decorator(work_cls):
 
