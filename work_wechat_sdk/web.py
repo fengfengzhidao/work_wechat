@@ -20,10 +20,16 @@ def we_hook(app, url, work_name='default'):
     def decorator(work_cls):
 
         def hook_fun():
+
+            params = dict(request.args)
+
             if request.method == 'GET':
-                return validation(recv_work)
+                # GET请求是首次添加的时候，需要进行服务器验证，以及用户直接在浏览器访问对应的url
+                return validation(recv_work, params)
             elif request.method == 'POST':
-                return user_message(recv_work)
+                # POST请求就是对于用户在企业微信客户端发送的消息
+                data = request.data.decode('utf-8')
+                return user_message(recv_work, params, data)
 
         # 实例化发送消息的对象
         recv_work = work_cls(work_name)

@@ -3,8 +3,6 @@
 import time
 from xml.dom.minidom import parseString
 
-from flask import request
-
 from settings import CROPID, INSTALL_APP
 from work_wechat_sdk.wx_biz_msg_crypt import WXBizMsgCrypt
 
@@ -125,11 +123,12 @@ class ReceiveBaseWork:
 
 
 # 添加的时候的验证
-def validation(receive_work):
-    msg_signature = request.args.get('msg_signature', '')
-    timestamp = request.args.get('timestamp', '')
-    nonce = request.args.get('nonce', '')
-    echo_str = request.args.get('echostr', '')
+def validation(receive_work, params):
+    msg_signature = params.get('msg_signature', '')
+    timestamp = params.get('timestamp', '')
+    nonce = params.get('nonce', '')
+    echo_str = params.get('echostr', '')
+
     ret, res_str = receive_work._crypt.VerifyURL(msg_signature, timestamp, nonce, echo_str)
     if ret != 0:
         # 用户可能直接访问了这个接口
@@ -140,11 +139,10 @@ def validation(receive_work):
 
 
 # 用户发送消息来
-def user_message(receive_work: ReceiveBaseWork):
-    msg_signature = request.args.get('msg_signature', '')
-    timestamp = request.args.get('timestamp', '')
-    nonce = request.args.get('nonce', '')
-    data = request.data.decode('utf-8')
+def user_message(receive_work, params, data):
+    msg_signature = params.get('msg_signature', '')
+    timestamp = params.get('timestamp', '')
+    nonce = params.get('nonce', '')
     ret, msg_xml = receive_work._crypt.DecryptMsg(data, msg_signature, timestamp, nonce)
 
     if ret != 0:
