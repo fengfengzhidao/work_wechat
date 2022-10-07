@@ -110,7 +110,7 @@ class ReceiveBaseWork:
     def voice(self, media_id, format):
         print(media_id, format)
 
-    def link(self, title, desc, pic_url, url):
+    def link(self, title, desc, url, pic_url):
         print(title, desc, pic_url, url)
 
     def video(self, media_id, thumb_media_id):

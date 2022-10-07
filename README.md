@@ -74,20 +74,30 @@ app = Flask(__name__)
 @we_hook(app, '/hook/', work_name='default')
 class RecvWork(ReceiveBaseWork):
     # 接收消息的回调
-    def recv(self, user, msg):
+    def recv(self, content):
         """
-        :param user: 用户id
-        :param msg: 消息内容
+        :param content: 消息内容
         :return:
         """
-        print('default', user, msg)
+        print('default', self.user, content)
 ```
 
-我们需要编写一个类，去继承ReceiveBaseWork，这个类中的recv方法就是接受消息的回调
+我们需要编写一个类，去继承ReceiveBaseWork，这个类中的text方法就代表接收text消息的回调
 
-一共有两个参数，user是发送者的用户id
+content则是消息内容
 
-msg则是消息内容，在纯文本就是text，图片就是图片的在线链接
+一共提供了六种方法，分别对应六种类型的回调
+
+| 方法 | 介绍 | 参数 |
+|---- | ---- |---- |
+| text | 文本消息| content |
+| image | 图片消息 | media_id pic_url |
+| voice | 语音消息 | media_id format |
+| link | 链接 | title desc url pic_url |
+| video | 视频 | media_id thumb_media_id |
+| location | 定位 | label location scale app_type |
+
+参数类型详见 [消息格式](https://developer.work.weixin.qq.com/document/path/90857)
 
 web_hook则是做类和视图挂载到路由的作用
 
