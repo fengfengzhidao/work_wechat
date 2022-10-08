@@ -87,6 +87,39 @@ class WorkMessage(BaseWork):
             self.__send_message()
         print(response)
 
+    def _send_text(self):
+        """文本消息"""
+
+    def _send_image(self):
+        """图片消息"""
+
+    def _send_voice(self):
+        """语音消息"""
+
+    def _send_video(self):
+        """视频消息"""
+
+    def _send_file(self):
+        """文件消息"""
+
+    def _send_text_card(self):
+        """文本卡片消息"""
+
+    def _news(self):
+        """图文消息"""
+
+    def _mpnews(self):
+        """新图文消息"""
+
+    def _markdown(self):
+        """markdown消息"""
+
+    def _miniprogram_notice(self):
+        """小程序通知消息"""
+
+    def _template_card(self):
+        """模板卡片消息"""
+
     # 发送具体的消息
     def send_text(self, content):
         """文本消息"""
