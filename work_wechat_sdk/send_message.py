@@ -129,49 +129,145 @@ class WorkMessage(BaseWork):
         self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
         self.__send_message()
 
-    def send_video(self, media_id, **kwargs):
+    def send_video(self, media_id, title=None, description=None, **kwargs):
         """视频消息"""
+        self.payload['msgtype'] = 'video'
+        self.payload['video'] = {
+            "media_id": media_id,
+            "title": title,
+            "description": description,
+        }
+        self.payload['safe'] = kwargs.get('safe')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def send_file(self):
+    def send_file(self, media_id, **kwargs):
         """文件消息"""
+        self.payload['msgtype'] = 'file'
+        self.payload['file'] = {
+            "media_id": media_id
+        }
+        self.payload['safe'] = kwargs.get('safe')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def _send_text_card(self):
+    def send_text_card(self, media_id, title, description, url, btntxt=None, **kwargs):
         """文本卡片消息"""
+        self.payload['msgtype'] = 'textcard'
+        self.payload['textcard'] = {
+            "media_id": media_id,
+            "title": title,
+            "description": description,
+            "url": url,
+            "btntxt": btntxt,
+        }
+        self.payload['enable_id_trans'] = kwargs.get('enable_id_trans')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def _news(self):
+    def send_news(self, article_list: [dict], **kwargs):
         """图文消息"""
+        """
+        {
+           "title" : "中秋节礼品领取",
+           "description" : "今年中秋节公司有豪礼相送",
+           "url" : "URL",
+           "picurl" : "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png", 
+           "appid": "wx123123123123123",
+           "pagepath": "pages/index?userid=zhangsan&orderid=123123123",
+        }
+        """
+        self.payload['msgtype'] = 'news'
+        self.payload['news'] = {
+            "articles": article_list,
+        }
+        self.payload['enable_id_trans'] = kwargs.get('enable_id_trans')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def _mpnews(self):
+    def send_mpnews(self, article_list: [dict], **kwargs):
         """新图文消息"""
+        """
+        {
+           "title": "Title", 
+           "thumb_media_id": "MEDIA_ID",
+           "author": "Author",
+           "content_source_url": "URL",
+           "content": "Content",
+           "digest": "Digest description"
+        }
+        """
+        self.payload['msgtype'] = 'mpnews'
+        self.payload['mpnews'] = {
+            "articles": article_list,
+        }
+        self.payload['safe'] = kwargs.get('safe')
+        self.payload['enable_id_trans'] = kwargs.get('enable_id_trans')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def _markdown(self):
-        """markdown消息"""
-
-    def _miniprogram_notice(self):
-        """小程序通知消息"""
-
-    def _template_card(self):
-        """模板卡片消息"""
-
-    def send_markdown(self, content):
+    def send_markdown(self, content, **kwargs):
         """markdown消息"""
         self.payload['msgtype'] = 'markdown'
         self.payload['markdown'] = {
             'content': content
         }
+
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
         self.__send_message()
 
-    def send_card(self, content):
-        """卡片消息"""
-        self.payload['msgtype'] = 'textcard'
-        self.payload['textcard'] = content
+    def send_miniprogram_notice(self, app_id, page, title, content_item, **kwargs):
+        """小程序通知消息"""
+        self.payload['msgtype'] = 'miniprogram_notice'
+        self.payload['miniprogram_notice'] = {
+            "appid": app_id,
+            "page": page,
+            "title": title,
+            "description": kwargs.get("description", None),
+            "emphasis_first_item": kwargs.get("emphasis_first_item", True),  # 是否放大第一个content_item
+            "content_item": content_item  # 消息内容键值对  {key: "", value:""}
+        }
+
+        self.payload['enable_id_trans'] = kwargs.get('enable_id_trans')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
         self.__send_message()
 
-    def send_news(self, content):
-        """图文消息"""
-        self.payload['msgtype'] = 'news'
-        self.payload['news'] = content
-        self.__send_message()
+    def send_template_card(self, card_type, **kwargs):
+        """模板卡片消息"""
+        self.payload['msgtype'] = 'template_card'
+        self.payload['template_card'] = {
+            "card_type": "text_notice",
+        }
+        self.payload['enable_id_trans'] = kwargs.get('enable_id_trans')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        return TemplateCard(self.payload['template_card'])
+
+
+class TemplateCard(WorkMessage):
+
+    def text_notice(self):
+        """文本通知型"""
+        # self.__send_message()
+
+    def news_notice(self):
+        """图文展示型"""
+
+    def button_interaction(self):
+        """按钮交互型"""
+
+    def vote_interaction(self):
+        """投票选择型"""
+
+    def multiple_interaction(self):
+        """多项选择型"""
 
 
 class WorkMedia(BaseWork):
