@@ -83,15 +83,26 @@ class Work:
         payload['news'] = content
         self.__send_message()
 
+    ####  文件相关  ####
+
+    def get_media(self, media_id):
+        if not self.access_token:
+            self.authentication()
+        res = requests.get(base_url + f"media/get?access_token={self.access_token}&media_id={media_id}").content
+        return res
+
 
 if __name__ == '__main__':
     """
     创建一个work实例，实例就是调用哪一个应用去发送消息
     """
 
-    work = Work(work_name='morn', to_user='fengfeng')
-
+    # work = Work(work_name='morn', to_user='fengfeng')
+    work = Work(to_user='fengfeng')
+    """
     work.send_text('你好啊')
+    """
+
     # 发送普通文本
     """
     work.send_text('你好')
@@ -143,3 +154,6 @@ if __name__ == '__main__':
         ]
     })
     """
+
+    # 获取media文件
+    res = work.get_media('1E208uubo47RuCH9SdAMwTckAauuE8jn1f9mQgte3WqhQ-GgQZVjMqYfWY_t_eYlb')

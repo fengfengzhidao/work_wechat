@@ -41,13 +41,7 @@ def index():
 
 @we_hook(app, '/hook/', work_name='default')
 class RecvWork(ReceiveBaseWork):
-    # 可以接收六大消息
-    # text
-    # image
-    # voice
-    # link
-    # video
-    # location
+
     def text(self, content):
         """
         :param content: 消息内容
@@ -56,6 +50,9 @@ class RecvWork(ReceiveBaseWork):
         print('default', content, self.user)
         work = Work(to_user='fengfeng')
         work.send_text(content)
+
+    def image(self, media_id, pic_url):
+        print(media_id, pic_url)
 
 
 @we_hook(app, '/morn/', work_name='morn')
