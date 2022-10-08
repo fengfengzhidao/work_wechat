@@ -2,6 +2,8 @@
 # @Author:fengfeng
 import requests
 from settings import CROPID, INSTALL_APP
+import json
+import os
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
@@ -9,85 +11,116 @@ headers = {
 }
 base_url = 'https://qyapi.weixin.qq.com/cgi-bin/'
 
-payload = {
 
-}
-
-
-class Work:
+class BaseWork:
     def __init__(self, work_name='default', **kwargs):
-        """
-        :param work_name:根据work_name去找对应的应用
-        :param kwargs:
-        """
-        """
-        conf:基本的配置信息
-        """
-        self.access_token = None
         try:
             self.config = INSTALL_APP[work_name]
+            self.access_token = AccessToken(self.config)
         except Exception:
             raise KeyError('the work_name does not exist！')
-        payload['touser'] = kwargs.get('to_user', '')  # 发给谁，用|连接
-        payload['toparty'] = kwargs.get('to_party', '')  # 部门
-        payload['totag'] = kwargs.get('to_tag', '')  # 标签
-        payload['agentid'] = self.config["AgentId"]
 
-    def authentication(self):
-        """鉴权"""
-        url = base_url + f'gettoken?corpid={CROPID}&corpsecret={self.config["Secret"]}'
+
+class AccessToken:
+    """Token相关的处理类"""
+    file_name = 'access_token.json'
+
+    def __init__(self, config):
+        # 判断是否有access_token这个文件
+        self.Secret = config['Secret']
+        self.access_token = ''
+        if not os.path.exists(self.file_name):
+            # 请求url获取access_token
+            self.get_token()
+            return
+        # 如果存在，则取到其中的access_token
+        self.load_token()
+
+    def load_token(self):
+        """
+        读取token
+        """
+        with open(self.file_name, 'r')as f:
+            json_str = json.load(f)
+        self.access_token = json_str['access_token']
+        return self.access_token
+
+    def get_token(self):
+        """获取token"""
+        url = base_url + f'gettoken?corpid={CROPID}&corpsecret={self.Secret}'
         r = requests.get(url).json()
         self.access_token = r['access_token']
+        # 创建文件，写入json
+        self.save_token()
+        return self.access_token
+
+    def save_token(self):
+        """将token保存到文件中"""
+        with open(self.file_name, 'w')as f:
+            json.dump({"access_token": self.access_token}, f)
+
+    def __str__(self):
+        return self.access_token
+
+
+class WorkMessage(BaseWork):
+    """推送消息的类"""
+    payload = {}
+
+    def __init__(self, work_name='default', **kwargs):
+        super(WorkMessage, self).__init__(work_name, **kwargs)
+
+        self.payload['touser'] = kwargs.get('to_user', '')  # 发给谁，用|连接
+        self.payload['toparty'] = kwargs.get('to_party', '')  # 部门
+        self.payload['totag'] = kwargs.get('to_tag', '')  # 标签
+        self.payload['agentid'] = self.config["AgentId"]
 
     # 发送消息
     def __send_message(self):
         """发送消息的通用请求"""
-        # 如果没有token
-        if not self.access_token:
-            self.authentication()
         url = base_url + f"message/send?access_token={self.access_token}&random=69152"
-        response = requests.request("POST", url, headers=headers, json=payload).json()
+        response = requests.request("POST", url, headers=headers, json=self.payload).json()
         code = response['errcode']
         if code == 42001:
             # token过期
-            self.authentication()
+            self.access_token = self.access_token.get_token()
             self.__send_message()
         print(response)
 
     # 发送具体的消息
     def send_text(self, content):
         """文本消息"""
-        payload['msgtype'] = 'text'
-        payload['text'] = {
+        self.payload['msgtype'] = 'text'
+        self.payload['text'] = {
             'content': content
         }
         self.__send_message()
 
     def send_markdown(self, content):
         """markdown消息"""
-        payload['msgtype'] = 'markdown'
-        payload['markdown'] = {
+        self.payload['msgtype'] = 'markdown'
+        self.payload['markdown'] = {
             'content': content
         }
         self.__send_message()
 
     def send_card(self, content):
         """卡片消息"""
-        payload['msgtype'] = 'textcard'
-        payload['textcard'] = content
+        self.payload['msgtype'] = 'textcard'
+        self.payload['textcard'] = content
         self.__send_message()
 
     def send_image(self, content):
         """图文消息"""
-        payload['msgtype'] = 'news'
-        payload['news'] = content
+        self.payload['msgtype'] = 'news'
+        self.payload['news'] = content
         self.__send_message()
 
-    ####  文件相关  ####
+
+class WorkMedia(BaseWork):
+    """素材处理相关的类"""
 
     def get_media(self, media_id):
-        if not self.access_token:
-            self.authentication()
         res = requests.get(base_url + f"media/get?access_token={self.access_token}&media_id={media_id}").content
         return res
 
@@ -96,9 +129,10 @@ if __name__ == '__main__':
     """
     创建一个work实例，实例就是调用哪一个应用去发送消息
     """
-
+    # access_token = AccessToken()
     # work = Work(work_name='morn', to_user='fengfeng')
-    work = Work(to_user='fengfeng')
+    work = WorkMessage(to_user='fengfeng')
+    # work.send_text('牛逼')
     """
     work.send_text('你好啊')
     """
@@ -156,4 +190,4 @@ if __name__ == '__main__':
     """
 
     # 获取media文件
-    res = work.get_media('1E208uubo47RuCH9SdAMwTckAauuE8jn1f9mQgte3WqhQ-GgQZVjMqYfWY_t_eYlb')
+    # res = work.get_media('1E208uubo47RuCH9SdAMwTckAauuE8jn1f9mQgte3WqhQ-GgQZVjMqYfWY_t_eYlb')

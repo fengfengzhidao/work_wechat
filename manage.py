@@ -4,7 +4,7 @@
 from flask import Flask
 from flask import render_template
 from work_wechat_sdk import ReceiveBaseWork
-from work_wechat_sdk import Work
+from work_wechat_sdk import WorkMessage
 from work_wechat_sdk.web import we_hook
 from settings import CROPID, INSTALL_APP
 import re
@@ -48,7 +48,7 @@ class RecvWork(ReceiveBaseWork):
         :return:
         """
         print('default', content, self.user)
-        work = Work(to_user='fengfeng')
+        work = WorkMessage(to_user='fengfeng')
         work.send_text(content)
 
     def image(self, media_id, pic_url):
@@ -64,7 +64,7 @@ class RecvWork(ReceiveBaseWork):
         :return:
         """
         print('morn', content, self.user)
-        work = Work(work_name='morn', to_user='fengfeng')
+        work = WorkMessage(work_name='morn', to_user='fengfeng')
         work.send_text(content)
 
 

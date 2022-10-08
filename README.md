@@ -46,9 +46,9 @@ INSTALL_APP = {
 配置成功之后，可以运行这段代码进行测试
 
 ```python
-from work_wechat_sdk import Work
+from work_wechat_sdk import WorkMessage
 
-work = Work(work_name='default', to_user='xxx')
+work = WorkMessage(work_name='default', to_user='xxx')
 # work_name 是调用对应的应用去实现
 # to_user 发送给某个人
 work.send_text('测试数据')
