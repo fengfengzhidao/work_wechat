@@ -87,19 +87,52 @@ class WorkMessage(BaseWork):
             self.__send_message()
         print(response)
 
-    def _send_text(self):
-        """文本消息"""
+    def send_text(self, content, **kwargs):
+        """
+        其中content字段可以支持换行、以及a标签，即可打开自定义的网页
+        :param content: 文本
+        :param kwargs: 文本消息
+        :return:
+        """
+        self.payload['msgtype'] = 'text'
+        self.payload['text'] = {
+            'content': content
+        }
+        # 表示是否是保密消息，0表示可对外分享，1表示不能分享且内容显示水印，默认为0
+        self.payload['safe'] = kwargs.get('safe')
+        # 表示是否开启id转译，0表示否，1表示是，默认0。仅第三方应用需要用到，企业自建应用可以忽略。
+        self.payload['enable_id_trans'] = kwargs.get('enable_id_trans')
+        # 表示是否开启重复消息检查，0表示否，1表示是，默认0
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        # 表示是否重复消息检查的时间间隔，默认1800s，最大不超过4小时
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def _send_image(self):
+    def send_image(self, media_id, **kwargs):
         """图片消息"""
+        self.payload['msgtype'] = 'image'
+        self.payload['image'] = {
+            "media_id": media_id
+        }
+        self.payload['safe'] = kwargs.get('safe')
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def _send_voice(self):
+    def send_voice(self, media_id, **kwargs):
         """语音消息"""
+        self.payload['msgtype'] = 'voice'
+        self.payload['voice'] = {
+            "media_id": media_id
+        }
+        self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
+        self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
+        self.__send_message()
 
-    def _send_video(self):
+    def send_video(self, media_id, **kwargs):
         """视频消息"""
 
-    def _send_file(self):
+    def send_file(self):
         """文件消息"""
 
     def _send_text_card(self):
@@ -120,15 +153,6 @@ class WorkMessage(BaseWork):
     def _template_card(self):
         """模板卡片消息"""
 
-    # 发送具体的消息
-    def send_text(self, content):
-        """文本消息"""
-        self.payload['msgtype'] = 'text'
-        self.payload['text'] = {
-            'content': content
-        }
-        self.__send_message()
-
     def send_markdown(self, content):
         """markdown消息"""
         self.payload['msgtype'] = 'markdown'
@@ -143,7 +167,7 @@ class WorkMessage(BaseWork):
         self.payload['textcard'] = content
         self.__send_message()
 
-    def send_image(self, content):
+    def send_news(self, content):
         """图文消息"""
         self.payload['msgtype'] = 'news'
         self.payload['news'] = content
@@ -165,7 +189,11 @@ if __name__ == '__main__':
     # access_token = AccessToken()
     # work = Work(work_name='morn', to_user='fengfeng')
     work = WorkMessage(to_user='fengfeng')
-    # work.send_text('牛逼')
+
+    # work.send_text('nb', enable_duplicate_check=1)
+    # work.send_image('1E208uubo47RuCH9SdAMwTckAauuE8jn1f9mQgte3WqhQ-GgQZVjMqYfWY_t_eYlb')
+    # work.send_voice('1KuiAvzF8c6amM5ya_IVK7cSxEMv4XX69qWL_Kl_C4TkiHrdkJQrKrM3aJxrZs744')
+
     """
     work.send_text('你好啊')
     """
