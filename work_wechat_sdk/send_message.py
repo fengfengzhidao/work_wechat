@@ -4,6 +4,7 @@ import requests
 from settings import CROPID, INSTALL_APP
 import json
 import os
+from requests_toolbelt import MultipartEncoder
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
@@ -19,6 +20,19 @@ class BaseWork:
             self.access_token = AccessToken(self.config)
         except Exception:
             raise KeyError('the work_name does not exist！')
+
+    def upload_file(self, filename, filepath) -> str:
+        """上传文件到素材库，返回media_id"""
+        url = base_url + f'media/upload?access_token={self.access_token}&type=file'
+        with open(filepath, 'rb') as f:
+            m = MultipartEncoder(
+                fields={'file': (filename, f, 'multipart/form-data')})
+
+            response = requests.post(url=url, data=m, headers={
+                'Content-Type': m.content_type}).json()
+            if response['errmsg'] != 'ok':
+                return ''
+            return response['media_id']
 
 
 class AccessToken:
@@ -82,6 +96,7 @@ class WorkMessage(BaseWork):
         response = requests.request("POST", url, headers=headers, json=self.payload).json()
         code = response['errcode']
         if code == 42001:
+            # 过期重新获取token，再次发送
             # token过期
             self.access_token = self.access_token.get_token()
             self.__send_message()
