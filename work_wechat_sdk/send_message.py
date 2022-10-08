@@ -239,7 +239,7 @@ class WorkMessage(BaseWork):
         self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
         self.__send_message()
 
-    def send_template_card(self, card_type, **kwargs):
+    def send_template_card(self, **kwargs):
         """模板卡片消息"""
         self.payload['msgtype'] = 'template_card'
         self.payload['template_card'] = {
@@ -248,26 +248,30 @@ class WorkMessage(BaseWork):
         self.payload['enable_id_trans'] = kwargs.get('enable_id_trans')
         self.payload['enable_duplicate_check'] = kwargs.get('enable_duplicate_check')
         self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
-        return TemplateCard(self.payload['template_card'])
+        return TemplateCard()
 
 
 class TemplateCard(WorkMessage):
 
     def text_notice(self):
         """文本通知型"""
-        # self.__send_message()
+        self.payload['template_card']['card_type'] = "text_notice"
 
     def news_notice(self):
         """图文展示型"""
+        self.payload['template_card']['card_type'] = "news_notice"
 
     def button_interaction(self):
         """按钮交互型"""
+        self.payload['template_card']['card_type'] = "button_interaction"
 
     def vote_interaction(self):
         """投票选择型"""
+        self.payload['template_card']['card_type'] = "vote_interaction"
 
     def multiple_interaction(self):
         """多项选择型"""
+        self.payload['template_card']['card_type'] = "multiple_interaction"
 
 
 class WorkMedia(BaseWork):
@@ -285,6 +289,7 @@ if __name__ == '__main__':
     # access_token = AccessToken()
     # work = Work(work_name='morn', to_user='fengfeng')
     work = WorkMessage(to_user='fengfeng')
+    work.send_template_card().text_notice()
 
     # work.send_text('nb', enable_duplicate_check=1)
     # work.send_image('1E208uubo47RuCH9SdAMwTckAauuE8jn1f9mQgte3WqhQ-GgQZVjMqYfWY_t_eYlb')
