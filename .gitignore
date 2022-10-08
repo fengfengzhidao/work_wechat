@@ -6,3 +6,4 @@ __pycache__
 .vscode
 fengfeng_api/*
 nginx_start.conf
+work_test

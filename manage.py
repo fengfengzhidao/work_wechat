@@ -57,6 +57,9 @@ class RecvWork(ReceiveBaseWork):
     def voice(self, media_id, format):
         print(media_id)
 
+    def video(self, media_id, thumb_media_id):
+        print(media_id, thumb_media_id)
+
 
 @we_hook(app, '/morn/', work_name='morn')
 class RecvWork(ReceiveBaseWork):

@@ -5,6 +5,7 @@ from settings import CROPID, INSTALL_APP
 import json
 import os
 from requests_toolbelt import MultipartEncoder
+import re
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
@@ -168,11 +169,10 @@ class WorkMessage(BaseWork):
         self.payload['duplicate_check_interval'] = kwargs.get('duplicate_check_interval')
         self.__send_message()
 
-    def send_text_card(self, media_id, title, description, url, btntxt=None, **kwargs):
+    def send_text_card(self, title, description, url, btntxt=None, **kwargs):
         """文本卡片消息"""
         self.payload['msgtype'] = 'textcard'
         self.payload['textcard'] = {
-            "media_id": media_id,
             "title": title,
             "description": description,
             "url": url,
@@ -184,7 +184,7 @@ class WorkMessage(BaseWork):
         self.__send_message()
 
     def send_news(self, article_list: [dict], **kwargs):
-        """图文消息"""
+        """图文消息，点击跳转网页"""
         """
         {
            "title" : "中秋节礼品领取",
@@ -205,7 +205,7 @@ class WorkMessage(BaseWork):
         self.__send_message()
 
     def send_mpnews(self, article_list: [dict], **kwargs):
-        """新图文消息"""
+        """新图文消息，点击进入详情页"""
         """
         {
            "title": "Title", 
@@ -292,9 +292,21 @@ class TemplateCard(WorkMessage):
 class WorkMedia(BaseWork):
     """素材处理相关的类"""
 
-    def get_media(self, media_id):
-        res = requests.get(base_url + f"media/get?access_token={self.access_token}&media_id={media_id}").content
-        return res
+    def get_media(self, media_id: str) -> (str, bytes):
+        """
+        :param media_id: 文件id
+        :return: (文件名，文件字节流)
+        """
+        response = requests.get(base_url + f"media/get?access_token={self.access_token}&media_id={media_id}")
+        header = response.headers
+        if header.get('Error-Code'):
+            self.access_token.get_token()
+            self.get_media(media_id)
+        else:
+            pass
+
+        file_name = re.findall(r'filename="(.*?)"', header['Content-disposition'])[0]
+        return file_name, response.content
 
 
 if __name__ == '__main__':
@@ -304,11 +316,77 @@ if __name__ == '__main__':
     # access_token = AccessToken()
     # work = Work(work_name='morn', to_user='fengfeng')
     work = WorkMessage(to_user='fengfeng')
-    work.send_template_card().text_notice()
+    # work.send_text_card(
+    #     '领奖通知',
+    #     "<div class=\"gray\">2016年9月26日</div> <div class=\"normal\">恭喜你抽中iPhone 7一台，领奖码：xxxx</div><div class=\"highlight\">请于2016年10月10日前联系行政同事领取</div>",
+    #     "http://www.fengfengzhidao.com",
+    #     "更多"
+    # )
+    # work.send_miniprogram_notice(
+    #     app_id='',
+    #     page='pages/index',
+    #     title="会议室预订成功通知",
+    #     description="4月27日 16:16",
+    #     emphasis_first_item=True,
+    #     content_item=[
+    #         {
+    #             "key": "会议室",
+    #             "value": "402"
+    #         },
+    #         {
+    #             "key": "会议地点",
+    #             "value": "广州TIT-402会议室"
+    #         },
+    #         {
+    #             "key": "会议时间",
+    #             "value": "2018年8月1日 09:00-09:30"
+    #         },
+    #         {
+    #             "key": "参与人员",
+    #             "value": "周剑轩"
+    #         }
+    #     ],
+    # )
+
+    # work.send_markdown("## 二级标题\n ### 三级标题 \n - 12\n - 23 \n 1.12")
+
+    work.send_mpnews([
+        {
+            "title": "Title",
+            "thumb_media_id": "1Y7ht2RcsUmJ1DGx3nxTSn-yjHTp3v6CWPT0BCb2DFXrTnNwykBGhQWH_CzZtchZ1",
+            "author": "Author",
+            "content_source_url": "http://www.fengfengzhidao.com",
+            "content": "Content",
+            "digest": "Digest description"
+        },
+    ])
+
+    # work.send_news([
+    #     {
+    #         "title": "中秋节礼品领取",
+    #         "description": "今年中秋节公司有豪礼相送",
+    #         "url": "http://www.fengfengzhidao.com",
+    #         "picurl": "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png",
+    #     },
+    # ])
+
+    # media_id = work.upload_file('receives_message.py', 'receives_message.py')
+    # print(media_id)
+    # media = WorkMedia()
+    # file = media.get_media(
+    #     '39RiBRWY18Wv_FyGQBvFflY12sJihsYJ588BfxyNyOLMV9UltJNKKNhyrxsejBEQ1')  # 3ALavB1yAnoJ7bN2rBqeXbMrFpb7KqiKnEhA_nZsp1-eg0d2esjQY3vP4VdCXth-o
+
+    # work.send_template_card().text_notice()
 
     # work.send_text('nb', enable_duplicate_check=1)
     # work.send_image('1E208uubo47RuCH9SdAMwTckAauuE8jn1f9mQgte3WqhQ-GgQZVjMqYfWY_t_eYlb')
-    # work.send_voice('1KuiAvzF8c6amM5ya_IVK7cSxEMv4XX69qWL_Kl_C4TkiHrdkJQrKrM3aJxrZs744')
+
+    # work.send_voice('1vIETORFaH-Aib0GXcU5KbBIIRYNvdQzy5mGPLRJjtg9sNjxY0mLwp_SwlmCuUuYU')
+
+    # work.send_video('1kDeScQFxoKSwPKDGfqwiOBhmSDFZ9MSuU7dRtk_s2UAbNMKIo4qI_-kUDHA_gKL-', title='这是视频的标题', description='这是简介')
+    # work.send_image('1Y7ht2RcsUmJ1DGx3nxTSn-yjHTp3v6CWPT0BCb2DFXrTnNwykBGhQWH_CzZtchZ1')
+
+    # work.send_file('39RiBRWY18Wv_FyGQBvFflY12sJihsYJ588BfxyNyOLMV9UltJNKKNhyrxsejBEQ1')
 
     """
     work.send_text('你好啊')
