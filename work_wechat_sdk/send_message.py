@@ -15,6 +15,7 @@ base_url = 'https://qyapi.weixin.qq.com/cgi-bin/'
 
 
 class BaseWork:
+
     def __init__(self, work_name='default', **kwargs):
         try:
             self.config = INSTALL_APP[work_name]
@@ -22,18 +23,45 @@ class BaseWork:
         except Exception:
             raise KeyError('the work_name does not exist！')
 
+    def _upload(self, url, part):
+        response = requests.post(
+            url=url,
+            data=part,
+            headers={
+                'Content-Type': part.content_type
+            }
+        ).json()
+
+        if response['errcode'] == 42001:
+            self.access_token = self.access_token.get_token()
+            return self._upload(url, part)
+        return response
+
     def upload_file(self, filename, filepath) -> str:
         """上传文件到素材库，返回media_id"""
         url = base_url + f'media/upload?access_token={self.access_token}&type=file'
         with open(filepath, 'rb') as f:
-            m = MultipartEncoder(
-                fields={'file': (filename, f, 'multipart/form-data')})
+            part = MultipartEncoder(
+                fields={
+                    'file': (filename, f, 'multipart/form-data')
+                }
+            )
 
-            response = requests.post(url=url, data=m, headers={
-                'Content-Type': m.content_type}).json()
-            if response['errmsg'] != 'ok':
-                return ''
-            return response['media_id']
+            response = self._upload(url, part)
+        return response['media_id']
+
+    def upload_image(self, filename, filepath) -> str:
+        """上传图片到素材库，返回永久URL"""
+        url = base_url + f'media/uploadimg?access_token={self.access_token}'
+        with open(filepath, 'rb') as f:
+            part = MultipartEncoder(
+                fields={
+                    'file': (filename, f, 'multipart/form-data')
+                }
+            )
+
+            response = self._upload(url, part)
+        return response['url']
 
 
 class AccessToken:
