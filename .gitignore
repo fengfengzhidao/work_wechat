@@ -7,3 +7,4 @@ __pycache__
 fengfeng_api/*
 nginx_start.conf
 work_test
+access_token.json
