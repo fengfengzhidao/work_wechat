@@ -54,6 +54,148 @@ work = WorkMessage(work_name='default', to_user='xxx')
 work.send_text('测试数据')
 ```
 
+## 发消息API
+
+需要实例化一个message对象
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+```
+
+参数详解
+
+- work_name:对应使用的app
+- to_user:发送给谁
+- to_party:发送给哪个部门
+- to_tag:发送给对应标签
+
+### 文本消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_text(content="文本内容")
+```
+
+### 图片消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_image(media_id="xxx-xxx-xx")
+```
+
+### 语音消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_voice(media_id="xxx-xxx")
+```
+
+### 视频消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_video(media_id="xxx-xxx", title='视频标题', description='视频简介')
+```
+
+### 文件消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_file(media_id="xxx-xxx")
+```
+
+### 文本卡片消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_text_card(
+    title='卡片标题',
+    description='卡片简介',
+    url='xxx',
+    btntxt='更多'
+)
+```
+
+### 图文消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_news(article_list=[
+    {
+        "title": "中秋节礼品领取",
+        "description": "今年中秋节公司有豪礼相送",
+        "url": "URL",
+        "picurl": "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png",
+        "appid": "wx123123123123123",
+        "pagepath": "pages/index?userid=zhangsan&orderid=123123123",
+    }
+])
+```
+
+### 新图文消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_mpnews(article_list=[
+    {
+        "title": "Title",
+        "thumb_media_id": "MEDIA_ID",
+        "author": "Author",
+        "content_source_url": "URL",
+        "content": "Content",
+        "digest": "Digest description"
+    }
+])
+```
+
+### markdown消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_markdown(content="markdown内容")
+```
+
+### 小程序通知消息
+
+```python
+from work_wechat_sdk import WorkMessage
+
+work = WorkMessage(work_name='default', to_user='xxx')
+work.send_miniprogram_notice(
+    app_id="xxx",
+    page='page',
+    title='标题',
+    content_item=[
+        {
+            "key": "key",
+            "value": "value"
+        }
+    ]
+)
+```
+
+### 模板消息
+
 # 接收消息配置
 
 ## 服务器配置
@@ -74,12 +216,20 @@ app = Flask(__name__)
 @we_hook(app, '/hook/', work_name='default')
 class RecvWork(ReceiveBaseWork):
     # 接收消息的回调
-    def recv(self, content):
+    def text(self, content):
         """
         :param content: 消息内容
         :return:
         """
         print('default', self.user, content)
+
+    def image(self, media_id, pic_url):
+        """
+        :param media_id: 素材id
+        :param pic_url: 图片的预览链接
+        :return:
+        """
+
 ```
 
 我们需要编写一个类，去继承ReceiveBaseWork，这个类中的text方法就代表接收text消息的回调
