@@ -80,6 +80,8 @@ work = WorkMessage(work_name='default', to_user='xxx')
 work.send_text(content="文本内容")
 ```
 
+![](http://python.fengfengzhidao.com/pic/20221009164130.png)
+
 ### 图片消息
 
 ```python
@@ -88,6 +90,8 @@ from work_wechat_sdk import WorkMessage
 work = WorkMessage(work_name='default', to_user='xxx')
 work.send_image(media_id="xxx-xxx-xx")
 ```
+
+![](http://python.fengfengzhidao.com/pic/20221009164156.png)
 
 ### 语音消息
 
@@ -98,6 +102,8 @@ work = WorkMessage(work_name='default', to_user='xxx')
 work.send_voice(media_id="xxx-xxx")
 ```
 
+![](http://python.fengfengzhidao.com/pic/20221009164209.png)
+
 ### 视频消息
 
 ```python
@@ -107,6 +113,8 @@ work = WorkMessage(work_name='default', to_user='xxx')
 work.send_video(media_id="xxx-xxx", title='视频标题', description='视频简介')
 ```
 
+![](http://python.fengfengzhidao.com/pic/20221009164230.png)
+
 ### 文件消息
 
 ```python
@@ -115,6 +123,8 @@ from work_wechat_sdk import WorkMessage
 work = WorkMessage(work_name='default', to_user='xxx')
 work.send_file(media_id="xxx-xxx")
 ```
+
+![](http://python.fengfengzhidao.com/pic/20221009164243.png)
 
 ### 文本卡片消息
 
@@ -129,6 +139,8 @@ work.send_text_card(
     btntxt='更多'
 )
 ```
+
+![](http://python.fengfengzhidao.com/pic/20221009164256.png)
 
 ### 图文消息
 
@@ -148,6 +160,8 @@ work.send_news(article_list=[
 ])
 ```
 
+![](http://python.fengfengzhidao.com/pic/20221009164309.png)
+
 ### 新图文消息
 
 ```python
@@ -166,6 +180,8 @@ work.send_mpnews(article_list=[
 ])
 ```
 
+![](http://python.fengfengzhidao.com/pic/20221009164327.png)
+
 ### markdown消息
 
 ```python
@@ -174,6 +190,8 @@ from work_wechat_sdk import WorkMessage
 work = WorkMessage(work_name='default', to_user='xxx')
 work.send_markdown(content="markdown内容")
 ```
+
+![](http://python.fengfengzhidao.com/pic/20221009164350.png)
 
 ### 小程序通知消息
 
@@ -193,6 +211,8 @@ work.send_miniprogram_notice(
     ]
 )
 ```
+
+![](http://python.fengfengzhidao.com/pic/20221009164403.png)
 
 ### 模板消息
 
